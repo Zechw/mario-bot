@@ -42,14 +42,18 @@ class MarioNet():
             max_steps = len(game[1]) # idk if len of rewards is faster
             predictions = self.net.predict(np.array(game[0]))
             for step_i, observation in enumerate(game[0]):
-                max_q = max(predictions[step_i+1]) # output of outlook for next netState
-                reward = game[1] + self.discount_factor * max_q
-                desired_outputs.append(predictions[step_i] * reward)
+                try:
+                    max_q = max(predictions[step_i+1]) # output of outlook for next netState
+                except:
+                    max_q = 0
+                reward = game[1][step_i] + self.discount_factor * max_q
+                inputs.append(observation)
+                desired_outputs.append(predictions[step_i][0] * reward)
 
         inputs = np.array(inputs)
-        desired_outpus = np.array(desired_outpus)
-        if desired_outpus.size != 0:
-            self.net.fit(inputs, desired_outpus, epochs=self.traning_epochs)
+        desired_outputs = np.array(desired_outputs)
+        if desired_outputs.size != 0:
+            self.net.fit(inputs, desired_outputs, epochs=self.training_epochs)
 
     def on_game_end(self, game):
         self.game_history.append(game)
