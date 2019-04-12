@@ -6,7 +6,7 @@ import tensorflow as tf
 from tensorflow import keras
 
 ## # TODO:
-    # training
+    # natural randomness
     # increase randomness if top score gets stale
     # familiarity index? bias for exploring something new
 
@@ -20,8 +20,7 @@ class MarioNet():
         self.net.add(keras.layers.Conv2D(filters=4,
                                     kernel_size=80,
                                     input_shape=(224, 240, 3),
-                                    data_format="channels_last",
-                                    activation="relu"))
+                                    data_format="channels_last"))
         self.net.add(keras.layers.MaxPooling2D())
         self.net.add(keras.layers.Flatten())
         # self.net.add(keras.layers.Dense(, activation='sigmoid'))
@@ -32,7 +31,7 @@ class MarioNet():
 
     def fire(self, observation):
         out = self.net.predict(np.array([observation]))[0]
-        return [1 if x > 0.5 else 0 for x in out]
+        return [1 if x > 0 else 0 for x in out]
 
     def train(self):
         print('--training--')
@@ -43,12 +42,12 @@ class MarioNet():
             predictions = self.net.predict(np.array(game[0]))
             for step_i, observation in enumerate(game[0]):
                 try:
-                    max_q = max(predictions[step_i+1]) # output of outlook for next netState
+                    max_q = max(abs(predictions[step_i+1])) # output of outlook for next netState
                 except:
                     max_q = 0
                 reward = game[1][step_i] + self.discount_factor * max_q
                 inputs.append(observation)
-                desired_outputs.append(predictions[step_i][0] * reward)
+                desired_outputs.append((predictions[step_i][0]) * reward)
 
         inputs = np.array(inputs)
         desired_outputs = np.array(desired_outputs)
