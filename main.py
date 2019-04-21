@@ -21,11 +21,11 @@ class MarioNet():
                                     kernel_size=80,
                                     input_shape=(224, 240, 3),
                                     data_format="channels_last",
-                                    kernel_initializer='TruncatedNormal'))
+                                    kernel_initializer='zeros'))
         self.net.add(keras.layers.MaxPooling2D())
         self.net.add(keras.layers.Flatten())
-        # self.net.add(keras.layers.Dense(18, activation='sigmoid', kernel_initializer='TruncatedNormal'))
-        self.net.add(keras.layers.Dense(9, kernel_initializer='TruncatedNormal'))
+        # self.net.add(keras.layers.Dense(18, activation='sigmoid', kernel_initializer='zeros'))
+        self.net.add(keras.layers.Dense(9, kernel_initializer='zeros'))
         self.net.compile(optimizer=tf.train.AdamOptimizer(0.5),
                         loss='mse',
                         metrics=['accuracy'])
@@ -33,7 +33,12 @@ class MarioNet():
     def fire(self, observation):
         out = self.net.predict(np.array([observation]))[0]
         print(out)
-        out = [x + np.random.normal() for x in out]
+
+        # if 0 bias, go right (probably not the best logic... makes sure that initial randomness stumbles oppon a reward)
+        if out[7] == 0:
+            out[7] = 100
+
+        out = [x + (np.random.normal() * 0.1) for x in out]
         print(out)
         return [1 if x > 0 else 0 for x in out]
 
@@ -54,6 +59,7 @@ class MarioNet():
                     except:
                         max_q = 0
                     reward = rewards[step_i] + self.discount_factor * max_q
+                    # breakpoint()
                     inputs.append(observation)
                     desired_outputs.append([(x-0.5) * reward for x in actions[step_i]])
 
