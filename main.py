@@ -33,7 +33,7 @@ class MarioNet():
         self.net.add(keras.layers.Dense(64, activation='sigmoid', kernel_initializer='zeros'))
         self.net.add(keras.layers.Dense(32, activation='sigmoid', kernel_initializer='zeros'))
         self.net.add(keras.layers.Dense(9, kernel_initializer='zeros'))
-        self.net.compile(optimizer=tf.train.AdamOptimizer(0.01),
+        self.net.compile(optimizer=tf.train.AdamOptimizer(0.1),
                         loss='mse',
                         metrics=['accuracy'])
 
@@ -71,7 +71,7 @@ class MarioNet():
                         max_q = max(abs(predictions[step_i+1]))
                         reward = rewards[step_i+1] + (self.discount_factor * max_q)
                     except:
-                        reward = -10
+                        reward = sum(rewards) * -1
                                 # GAME OVER
                     inputs.append(observation)
                     desired_outputs.append([((x-0.5) * reward) for x in actions[step_i]])
@@ -117,7 +117,7 @@ g = 0
 r = 0
 while True:
     if f % 10 != 0:
-        #only play every 4 frames
+        #only play every n frames
         obs, reward, done, _ = env.step(action)
         r += reward
     else:
