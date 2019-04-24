@@ -71,7 +71,7 @@ class MarioNet():
                         max_q = max(abs(predictions[step_i+1]))
                         reward = rewards[step_i+1] + (self.discount_factor * max_q)
                     except:
-                        reward = sum(rewards) * -1
+                        reward = max(rewards) * -1
                                 # GAME OVER
                     inputs.append(observation)
                     desired_outputs.append([((x-0.5) * reward) for x in actions[step_i]])
