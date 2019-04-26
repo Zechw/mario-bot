@@ -164,9 +164,8 @@ class LuigiNet():
         print([b.scores for b in self.bots])
         avg_score = sum([max(b.scores) for b in self.bots])/len(self.bots)
         print(avg_score)
-        for i, bot in enumerate(self.bots):
-            if len(bot.scores) > 0 and max(bot.scores) < avg_score:
-                del self.bots[i]
-                print('x')
+        self.bots = [bot for bot in self.bots if max(bot.scores) > avg_score]
+        pdb.set_trace()
+        print('--')
         while len(self.bots) < self.population_size:
             self.create_new_bot()

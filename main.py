@@ -29,10 +29,6 @@ while True:
         reward_list.append(r)
         r = reward #reset reward
         # pdb.set_trace()
-
-
-    # bundle obs, action, reward into singular -cycle- obj?
-
         env.render()
     f += 1
 
