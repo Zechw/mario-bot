@@ -2,7 +2,7 @@ import retro
 import time
 
 from network import MarioNet, LuigiNet
-mario = LuigiNet()
+mario = MarioNet()
 
 env = retro.make(game='SuperMarioBros-Nes')
 obs = env.reset()
@@ -18,6 +18,7 @@ while True:
         obs, reward, done, _ = env.step(action)
         r += reward
     else:
+        obs = mario.downscale_observation(obs)
         action = mario.fire(obs)
 
         obs_list.append(obs)
