@@ -23,11 +23,13 @@ while True:
 
         obs_list.append(obs)
         action_list.append(action)
+        if r == 0:
+            r = -1
+        reward_list.append(r)
         obs, reward, done, info = env.step(action)
-                                # [b ? ? ? ? ? l r a]
+                                # ['B', None, 'SELECT', 'START', 'UP', 'DOWN', 'LEFT', 'RIGHT', 'A']
 
         print(g, f, r, action, info)
-        reward_list.append(r)
         r = reward #reset reward
         # pdb.set_trace()
         env.render()
