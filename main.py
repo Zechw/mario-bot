@@ -3,10 +3,10 @@ import time
 
 import random
 
-from MarioNet import MarioNet
-mario = MarioNet()
+from WarioNet import WarioNet
+mario = WarioNet()
 
-env = retro.make(game='SuperMarioBros-Nes')
+env = retro.make(game='SuperMarioBros-Nes', obs_type=retro.Observations.RAM)
 obs = env.reset()
 info = None
 obs_list = []
@@ -16,21 +16,7 @@ f = 0
 g = 0
 r = 0
 
-class RandomBot():
-    def __init__(self):
-        self.games = 0
-
-    def downscale_observation(self, obs):
-        return obs
-
-    def fire(self, obs, x):
-        return [random.randint(0,1), random.randint(0,1), random.randint(0,1), random.randint(0,1), random.randint(0,1), random.randint(0,1), random.randint(0,1), random.randint(0,1), random.randint(0,1)]
-
-    def on_game_end(self, x):
-        self.games += 1
-        print(self.games)
-
-
+from NetTools import RandomBot
 # mario = RandomBot()
 
 render_inp = input('would you like to render? y/n ')
@@ -42,7 +28,8 @@ while True:
         obs, reward, done, _ = env.step(action)
         r += reward
     else:
-        obs = mario.downscale_observation(obs)
+        # obs = mario.downscale_observation(obs)
+        # import pdb; pdb.set_trace()
         action = mario.fire(obs, [g, f, r, info])
         # import pdb; pdb.set_trace()
 
